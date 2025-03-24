@@ -88,8 +88,8 @@ const hashPassword = async (passwd) => {
 // await : 비동기 함수의 처리 완료될때까지 기다렸다가 결과를 받아옴
 const submitJoinfrm = async (frm) => {
     // Web Crypto API로 비밀번호 암호화
-    frm.passwd.value = await hashPassword(frm.passwd.value);
-    console.log(frm.passwd.value);
+    // frm.passwd.value = await hashPassword(frm.passwd.value);
+    // console.log(frm.passwd.value);
 
     // 폼에 입력된 데이터를 formData 객체로 초기화
     const formData = new FormData(frm);
@@ -130,7 +130,7 @@ const validLogin = (form) => {
 
 // 로그인 폼 제출
 const submitLoginfrm = async (frm) => {
-    frm.passwd.value = await hashPassword(frm.passwd.value);
+    //frm.passwd.value = await hashPassword(frm.passwd.value);
     const formData = new FormData(frm);
 
     fetch('/member/login', {

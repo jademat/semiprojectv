@@ -20,12 +20,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
 
-        log.info("loadUserByUsername 호출");
+        log.info("loadUserByUsername 호출 : {}",userid);
 
         // JPA,MariaDB를 이용해서 사용자 정보 확인
         User user = userRepository.findByUserid(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다."));
 
+        log.info("loadUserByUsername 호출 : {}",user.getPasswd());
         // 인증에 성공하면 userdetails 객체 초기화하고 반환
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserid())
