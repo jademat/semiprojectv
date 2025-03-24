@@ -20,19 +20,19 @@
                     <tbody>
                         <tr>
                             <td>아이디</td>
-                            <td><span th:text="${session.loginUser.userid}"></span></td>
+                            <td><span th:text="${loginUser.userid}"></span></td>
                         </tr>
                         <tr>
                             <td>이름</td>
-                            <td><span th:text="${session.loginUser.name}"></span></td>
+                            <td><span th:text="${loginUser.name}"></span></td>
                         </tr>
                         <tr>
                             <td>이메일</td>
-                            <td><span th:text="${session.loginUser.email}"></span></td>
+                            <td><span th:text="${loginUser.email}"></span></td>
                         </tr>
                         <tr>
                             <td>가입일</td>
-                            <td><span th:text="${#temporals.format(session.loginUser.regdate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+                            <td><span th:text="${#temporals.format(loginUser.regdate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                         </tr>
                     </tbody>
                 </table>
