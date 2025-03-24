@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,11 +75,10 @@ public class BoardController {
     }
 
     @GetMapping("/write")
-    public String write(Model m, HttpSession session) {
+    public String write(Model m, Authentication authentication ) {
         String returnPage = "redirect:/member/login";
 
-        if (session.getAttribute("loginUser") != null) {
-            // 시스템 환경변수에 저장된 사이트키 불러옴
+        if(authentication != null && authentication.isAuthenticated()){
             m.addAttribute("sitekey", System.getenv("recaptcha.sitekey"));
             returnPage = "views/board/write";
         }

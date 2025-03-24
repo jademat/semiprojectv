@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 
@@ -30,7 +31,7 @@
 
                 <div class="form-floating my-2">
                     <input type="text" name="userid" id="userid" class="form-control"
-                       placeholder="아이디" readonly th:value="${session.loginUser.userid}">
+                       placeholder="아이디" readonly th:value="${#authentication.principal.username}">
                     <label for="userid" class="form-label">아이디</label>
                 </div>
 

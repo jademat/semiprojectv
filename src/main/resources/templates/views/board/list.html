@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 
@@ -32,7 +33,7 @@
                     </td>
                     <td colspan="3"  class="text-end">
                         <button type="button" class="btn btn-primary" id="newbdbtn"
-                            th:if="${session.loginUser ne null}"><i class="fas fa-pen"></i> 글쓰기</button>
+                                sec:authorize="isAuthenticated()"><i class="fas fa-pen"></i> 글쓰기</button>
                     </td>
                 </tr>
                 <tr class="table-light">

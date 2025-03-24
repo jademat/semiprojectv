@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout}">
 
@@ -27,7 +28,7 @@
                     </div>
                 </div>
                 <div class="col-3 text-end">
-                    <button type="button" class="btn btn-light" id="newgalbtn">
+                    <button type="button" class="btn btn-light" id="newgalbtn" sec:authorize="isAuthenticated()">
                         <i class="fa fa-plus-circle"></i> 새글쓰기</button>
                 </div>
             </div><!-- 검색 및 새글쓰기 -->
