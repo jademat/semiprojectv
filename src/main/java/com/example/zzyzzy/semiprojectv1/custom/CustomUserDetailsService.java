@@ -1,4 +1,4 @@
-package com.example.zzyzzy.semiprojectv1.config;
+package com.example.zzyzzy.semiprojectv1.custom;
 
 import com.example.zzyzzy.semiprojectv1.domain.User;
 import com.example.zzyzzy.semiprojectv1.repository.UserRepository;
