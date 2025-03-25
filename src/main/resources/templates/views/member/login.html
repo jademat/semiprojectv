@@ -4,6 +4,8 @@
       layout:decorate="~{layouts/layout}">
 
     <th:block layout:fragment="css">
+        <meta name = "_csrf" th:content="${_csrf.token}"/>
+        <meta name = "_csrf_header" th:content="${_csrf.headerName}"/>
         <link href="/css/member.css" rel="stylesheet">
     </th:block>
 
@@ -37,6 +39,8 @@
         <script src="/js/member.js"></script>
         <script>
             const loginfrm = document.querySelector('#loginfrm');
+            const token = document.querySelector('meta[name="_csrf"]').content;
+            const headerName = document.querySelector('meta[name="_csrf_header"]').content;
 
             loginfrm.addEventListener("submit", (e) => {
                 e.preventDefault(); // submit 버튼 기능 중지
@@ -46,7 +50,7 @@
                 // 입력 요소 유효성 검사
                 let isValid = validLogin(e.target);
 
-                if (isValid) submitLoginfrm(e.target);
+                if (isValid) submitLoginfrm(e.target,token,headerName);
             });
         </script>
     </th:block>
