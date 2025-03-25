@@ -35,8 +35,6 @@ public class BoardController {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
-
-
         return "views/board/list";
     }
 
@@ -47,13 +45,7 @@ public class BoardController {
     }
 
     @GetMapping("/view")
-    public String view(Model m, int bno) {
-
-        m.addAttribute("bdrps", boardService.readOneBoardReply(bno));
-        //boardService.readOneView(bno);
-        //m.addAttribute("bd", boardService.readOneBoard(bno));
-        //m.addAttribute("rps", boardService.readReply(bno));
-
+    public String view() {
         return "views/board/view";
     }
 

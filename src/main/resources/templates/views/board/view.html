@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/layout}">
 
 <head>
@@ -45,17 +46,17 @@
                         다음게시물</button></td>
                     <td class="text-end">
                         <button type="button" class="btn btn-primary" id="newbdbtn"
-                         th:if="${session.loginUser ne null}">
+                                sec:authorize="isAuthenticated()">
                             새글쓰기</button></td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr><th class="vtit" colspan="2" th:text="${bdrps.bd.title}">제목</th></tr>
+<!--                <tr><th class="vtit" colspan="2" th:text="${bdrps.bd.title}">제목</th></tr>-->
 
-                <tr><td th:text="${bdrps.bd.userid}" class="vinfo">작성자</td>
-                    <td class="text-end vinfo" th:text="|${bdrps.bd.regdate}/${bdrps.bd.thumbs}/${bdrps.bd.views}|">작성일/추천/조회</td></tr>
+<!--                <tr><td th:text="${bdrps.bd.userid}" class="vinfo">작성자</td>-->
+<!--                    <td class="text-end vinfo" th:text="|${bdrps.bd.regdate}/${bdrps.bd.thumbs}/${bdrps.bd.views}|">작성일/추천/조회</td></tr>-->
 
-                <tr><td class="vcont pre" colspan="2" th:text="${bdrps.bd.contents}">본문글</td></tr>
+<!--                <tr><td class="vcont pre" colspan="2" th:text="${bdrps.bd.contents}">본문글</td></tr>-->
                 </tbody>
                 <tfoot><tr><td>
                     <button type="button" class="btn btn-warning">
@@ -74,34 +75,34 @@
                 </div>
 
                 <table class="table reply-border">
-                    <tr th:each="rp : ${bdrps.rps}">
-                        <th:block th:if="${rp.rno eq rp.ref}">
-                        <td class="text-left" th:text="${rp.userid}"></td>
-                        <td>
-                            <div class="cmtbg"><span th:text="${rp.regdate}">2025-03-04 23:41:27</span>
-                                <span class="pushend" th:if="${session.loginUser ne null}">
-                                        <a href="#" th:data-ref="${rp.rno}" data-bs-toggle="modal"
-                                           data-bs-target="#cmtModal">[추가]</a> [수정] [삭제]</span></div>
-                            <p class="py-1 pre" th:text="${rp.comments}"></p>
-                        </td>
-                        </th:block>
+<!--                    <tr th:each="rp : ${bdrps.rps}">-->
+<!--                        <th:block th:if="${rp.rno eq rp.ref}">-->
+<!--                        <td class="text-left" th:text="${rp.userid}"></td>-->
+<!--                        <td>-->
+<!--                            <div class="cmtbg"><span th:text="${rp.regdate}">2025-03-04 23:41:27</span>-->
+<!--                                <span class="pushend" th:if="${session.loginUser ne null}">-->
+<!--                                        <a href="#" th:data-ref="${rp.rno}" data-bs-toggle="modal"-->
+<!--                                           data-bs-target="#cmtModal">[추가]</a> [수정] [삭제]</span></div>-->
+<!--                            <p class="py-1 pre" th:text="${rp.comments}"></p>-->
+<!--                        </td>-->
+<!--                        </th:block>-->
 
-                        <th:block th:if="${rp.rno ne rp.ref}">
-                        <td class="text-left">&nbsp;</td>
-                        <td>
-                            <div class="rpybg"><span th:text="${rp.userid}">작성자</span>
-                                <span class="pushend" th:text="${rp.regdate}">작성일</span></div>
-                            <p class="py-1 pre" th:text="${rp.comments}"></p>
-                        </td>
-                        </th:block>
-                    </tr>
+<!--                        <th:block th:if="${rp.rno ne rp.ref}">-->
+<!--                        <td class="text-left">&nbsp;</td>-->
+<!--                        <td>-->
+<!--                            <div class="rpybg"><span th:text="${rp.userid}">작성자</span>-->
+<!--                                <span class="pushend" th:text="${rp.regdate}">작성일</span></div>-->
+<!--                            <p class="py-1 pre" th:text="${rp.comments}"></p>-->
+<!--                        </td>-->
+<!--                        </th:block>-->
+<!--                    </tr>-->
                 </table><!-- 댓글/대댓글 목록 -->
 
-                <div class="py-3" th:if="${session.loginUser ne null}">
+                <div class="py-3" sec:authorize="isAuthenticated()">
                     <form class="card card-body bg-light" method="post"
                           name="replyfrm" id="replyfrm">
                         <div class="row align-items-center">
-                            <div class="col text-center"><label th:text="${session.loginUser.userid}"></label></div>
+                            <div class="col text-center"><label th:text="${#authentication.principal.username}"></label></div>
 
                             <div class="col-8"><textarea id="comments" rows="10" name="comments"
                                  class="form-control col-7"></textarea></div>
