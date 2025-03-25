@@ -5,9 +5,7 @@
       layout:decorate="~{layouts/layout}">
 
     <th:block layout:fragment="content">
-        <main id="content"
-            th:with="pglink=${(#strings.isEmpty(param.findkey)) ?
-                '/board/list?cpg=' : '/board/find?findtype=' + param.findtype + '&findkey=' + param.findkey + '&cpg=' }">
+        <main id="content">
             <h2>게시판</h2>
             <table class="table table-striped">
                 <colgroup>
@@ -46,33 +44,14 @@
                 </tr>
                 </thead>
 
-                <tbody>
-<!--                    <tr th:each="bd : ${bdsdto.bdlist}">-->
-<!--                        <td th:text="${bd.bno}"></td>-->
-<!--                        <td><a th:href="|/board/view?bno=${bd.bno}|" th:text="${bd.title}"></a> </td>-->
-<!--                        <td th:text="${bd.userid}"></td>-->
-<!--                        <td th:text="${#strings.substring(bd.regdate,0,10)}"></td>-->
-<!--                        <td th:text="${bd.thumbs}"></td>-->
-<!--                        <td th:text="${bd.views}"></td>-->
-<!--                    </tr>-->
+                <tbody id = "boardlistbody">
+
                 </tbody>
 
                 <tfoot>
                     <tr><td colspan="6">
                         <ul class="pagination">
-                            <!-- 현재 페이지가 1/10보다 '이전' 링크를 표시 -->
-<!--                            <li class="page-item" th:if="${bdsdto.cpg gt 1}">-->
-<!--                                <a th:href="|${pglink}${bdsdto.cpg - 1}|" class="page-link">이전</a></li>-->
 
-<!--                            <th:block th:each="i : ${#numbers.sequence(bdsdto.stblk, bdsdto.edblk)}">-->
-<!--                                &lt;!&ndash; i 와 cpg가 일치하지 않으면 평범하게 출력 &ndash;&gt;-->
-<!--                                <li th:class="${(i ne bdsdto.cpg) ? 'page-item' : 'page-item active'}">-->
-<!--                                    <a th:href="|${pglink}${i}|"-->
-<!--                                        class="page-link" th:text="${i}">1</a></li>-->
-<!--                            </th:block>-->
-
-<!--                            <li class="page-item" th:if="${bdsdto.cpg lt bdsdto.cntpg}">-->
-<!--                                <a th:href="|${pglink}${bdsdto.cpg + 1}|" class="page-link">다음</a></li>-->
                         </ul>
                     </td></tr>
                 </tfoot>
@@ -82,7 +61,68 @@
 
     <th:block layout:fragment="script">
         <script src="/js/board.js"></script>
-        <script></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/v1/board/list', {
+                    headers : {'Accept' : 'application/json'}
+                }). then(response => response.json())
+                    .then(data => {
+                        //console.log(data);
+                        loadBoardList(data);
+                        loadBoardPgn(data);
+                    }).catch(error => {
+                        console.error('데이터 불러오는중 오류 발생');
+                });
+            });
+
+            const loadBoardList = (data) => {
+                const tableBody = document.querySelector('#boardlistbody')
+                if(!Array.isArray(data.bdlist) || data.bdlist.length === 0){
+                    tableBody.innerHTML += '<tr><td colspan="6">게시글이 없습니다.</td></tr>';
+                    return;
+                }
+
+                data.bdlist.forEach(bd => {
+                    const row = `
+                    <tr>
+                        <td>${bd.bno}</td>
+                        <td><a href="/board/view?bno=${bd.bno}">${bd.title}</a> </td>
+                        <td>${bd.userid}</td>
+                        <td>${bd.regdate.substring(0,10)}</td>
+                        <td>${bd.thumbs}</td>
+                        <td>${bd.views}</td>
+                    </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            };
+
+            const loadBoardPgn = (data) => {
+
+                const pgnBody = document.querySelector('.pagination');
+
+                const url = new URL(window.location.href);
+                const findtype = url.searchParams.get('findtype');
+                const findkey = url.searchParams.get('findkey');
+                const pglink = (findkey === null) ?
+                    '/board/list?cpg=' : `/board/find?findtype=${findtype}&findkey=${findkey}&cpg=`;
+
+                if (data.cpg > 1) {
+                    pgnBody.innerHTML += `<li class="page-item">
+                        <a href="${pglink}${data.cpg - 1}" class="page-link">이전</a></li>`
+                };
+
+                for(let i = data.stblk; i <= data.edblk; ++i) {
+                    let active = (i === data.cpg) ? 'page-item active' : 'page-item';
+                    pgnBody.innerHTML += `<li class="${active}"><a href="${pglink}${i}" class="page-link" >${i}</a></li>`
+                };
+
+                if (data.cpg < data.cntpg) {
+                    pgnBody.innerHTML += `<li class="page-item">
+                        <a href="${pglink}${data.cpg + 1}" class="page-link">다음</a></li>`
+                }
+            };
+        </script>
         <script>
             let findbtn = document.querySelector("#findbtn");
             let findtype = document.querySelector("#findtype");
