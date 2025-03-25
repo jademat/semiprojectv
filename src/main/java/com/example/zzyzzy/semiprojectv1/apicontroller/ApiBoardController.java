@@ -24,4 +24,13 @@ public class ApiBoardController {
 
         return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
+    @GetMapping("/find")
+    public ResponseEntity<BoardListDTO> find( String findtype, String findkey,
+                @RequestParam(defaultValue = "1") int cpg) {
+
+        BoardListDTO boardListDTO= boardService.findBoard(cpg,findtype,findkey);
+
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
+    }
+
 }

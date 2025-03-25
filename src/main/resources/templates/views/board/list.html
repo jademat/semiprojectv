@@ -68,7 +68,10 @@
                 const findkey = url.searchParams.get('findkey');
                 const cpg = (url.searchParams.get('cpg') === null)? 1 : url.searchParams.get('cpg');
 
-                fetch(`/api/v1/board/list?cpg=${cpg}`, {
+                //`/api/v1/board/list?cpg=${cpg}`
+                const fetchurl = (findkey === null) ? `/api/v1/board/list?cpg=${cpg}` : `/api/v1/board/find?findtype=${findtype}&findkey=${findkey}&cpg=${cpg}`;
+
+                fetch(fetchurl, {
                     headers : {'Accept' : 'application/json'}
                 }). then(response => response.json())
                     .then(data => {

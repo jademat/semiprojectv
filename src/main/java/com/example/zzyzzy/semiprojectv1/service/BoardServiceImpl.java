@@ -16,7 +16,7 @@ import java.util.Map;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardMapper;
-    @Value("${board.page-size}") private int pageSize;
+    @Value("20") private int pageSize;
 
     @Override
     public BoardListDTO readBoard(int cpg) {
