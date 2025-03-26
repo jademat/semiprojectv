@@ -210,7 +210,7 @@
             }
 
             data.rps.forEach(rp => {
-                if (rp.rno === rp.ref) {
+                if (rp.rno === rp.ref) {    // 출력유형이 댓글일 경우
                     replys += `<tr>
                         <td class="text-left">${rp.userid}</td>
                         <td>
@@ -225,16 +225,18 @@
                     </tr>`;
                 }
 
-                // <th:block th:if="${rp.rno ne rp.ref}">
-                //     <tr>
-                //         <td className="text-left">&nbsp;</td>
-                //         <td>
-                //             <div className="rpybg"><span th:text="${rp.userid}">작성자</span>
-                //                 <span className="pushend" th:text="${rp.regdate}">작성일</span></div>
-                //             <p className="py-1 pre" th:text="${rp.comments}"></p>
-                //         </td>
-                //     </tr>
-                // </th:block>
+                if (rp.rno !== rp.ref) {    // 출력유형이 대댓글일 경우
+                    replys += `
+                        <tr>
+                            <td className="text-left">&nbsp;</td>
+                            <td>
+                                <div className="rpybg"><span >${rp.userid}</span>
+                                    <span className="pushend" >${rp.regdate}</span></div>
+                                <p className="py-1 pre" >${rp.comments}</p>
+                            </td>
+                        </tr>
+                   `;
+                }
              });
 
             boardreply.innerHTML = replys;
