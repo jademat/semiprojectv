@@ -132,11 +132,12 @@
                             </button>
                         </div>
                     </div>
-                    <input name="userid" type="hidden" value="abc123"/>
+                    <input th:name="${_csrf.parameterName}" type="hidden" th:value="${_csrf.token}"/>
+                    <input name="userid" type="hidden" th:value="${#authentication.principal.username}">
                     <input name="pno" th:value="${param.bno}" type="hidden"/>
+
                 </form>
             </div><!-- 댓글쓰기 -->
-
         </div>
     </main>
 
@@ -150,7 +151,8 @@
                     <form id="cmmtfrm" method="post" name="cmmtfrm">
                             <textarea class="span4" cols="60" id="cmmt" name="comments"
                                       rows="8"></textarea>
-                        <input name="userid" type="hidden" value="abc123">
+                        <input th:name="${_csrf.parameterName}" type="hidden" th:value="${_csrf.token}"/>
+                        <input name="userid" type="hidden" th:value="${#authentication.principal.username}">
                         <input name="pno" th:value="${param.bno}" type="hidden">
                         <input id="refno" name="ref" type="hidden">
                     </form>
@@ -254,7 +256,7 @@
         let cmtModal = document.querySelector("#cmtModal");
 
         // 질의문자열에서 bno를 자바스크립트 코드에 삽입
-        const bno = [[${param.bno[0]}]];
+        const bno = new URLSearchParams(window.location.search).get('bno');
 
         newbdbtn?.addEventListener('click', (e) => {
             location.href = `/board/write`;

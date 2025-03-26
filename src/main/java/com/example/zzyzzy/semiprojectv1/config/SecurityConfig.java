@@ -28,7 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // CSRF 필터 끔
+                //.csrf().disable() // CSRF 필터 끔
                     .userDetailsService(userDetailsService) // userDetailsService 설정
                     .authorizeRequests() // URL 기반 인가 설정
                     .antMatchers("/member/logout", "/member/myinfo", "/board/write", "/gallery/write","board/reply").authenticated() // 인증 받은 사용자만 접근 가능
