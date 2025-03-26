@@ -50,13 +50,8 @@
                             새글쓰기</button></td>
                 </tr>
                 </thead>
-                <tbody>
-<!--                <tr><th class="vtit" colspan="2" th:text="${bdrps.bd.title}">제목</th></tr>-->
+                <tbody id = "boardView">
 
-<!--                <tr><td th:text="${bdrps.bd.userid}" class="vinfo">작성자</td>-->
-<!--                    <td class="text-end vinfo" th:text="|${bdrps.bd.regdate}/${bdrps.bd.thumbs}/${bdrps.bd.views}|">작성일/추천/조회</td></tr>-->
-
-<!--                <tr><td class="vcont pre" colspan="2" th:text="${bdrps.bd.contents}">본문글</td></tr>-->
                 </tbody>
                 <tfoot><tr><td>
                     <button type="button" class="btn btn-warning">
@@ -146,6 +141,42 @@
 
     <th:block layout:fragment="script">
         <script src="/js/board.js"></script>
+        <script>
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const bno = new URLSearchParams(window.location.search).get('bno');
+                    fetch(`/api/v1/board/view?bno=${bno}`,{
+                    headers : {'Accept' : 'application/json'}
+                }).then(response => response.json())
+                    .then(data => {
+                      //console.log(data)
+                        loadBoardView(data);
+                        loadBoardReply(data);
+                    })
+                    .catch(error =>{
+                       console.error('오류 발생',error)
+                    });
+            });
+
+            const loadBoardView = (data) => {
+                const boardview = document.querySelector('#boardView');
+                if(!data.bd || !data.bd.bno){
+                    boardview.innerHTML += '<tr><td>본문글이 없습니다.</td></tr>';
+                    return;
+                }
+                const views = `
+                  <tr><th class="vtit" colspan="2">${data.bd.title}</th></tr>
+
+                <tr><td  class="vinfo">${data.bd.userid}</td>
+                    <td class="text-end vinfo">${data.bd.regdate}/${data.bd.thumbs}/${data.bd.views}</td></tr>
+
+                <tr><td class="vcont pre" colspan="2">${data.bd.contents}</td></tr>
+                `;
+                boardview.innerHTML = views;
+            };
+            const loadBoardReply = (data) => {};
+
+        </script>
         <script th:inline="javascript">
             let newbdbtn = document.querySelector("#newbdbtn");
             let rmvbdbtn = document.querySelector("#rmvbdbtn");
