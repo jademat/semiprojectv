@@ -1,170 +1,197 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+<html lang="ko" layout:decorate="~{layouts/layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      layout:decorate="~{layouts/layout}">
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <style>
         /* board view */
         .vtit {
-            height: 100px; border-bottom: 3px solid black;
-            background: #dff0f8 !important; font-size: 32px; text-align: center;
+            height: 100px;
+            border-bottom: 3px solid black;
+            background: #dff0f8 !important;
+            font-size: 32px;
+            text-align: center;
         }
 
-        .vinfo { height: 35px; background: #ccff99 !important; }
-        .vinfo td { padding: 5px }
+        .vinfo {
+            height: 35px;
+            background: #ccff99 !important;
+        }
+
+        .vinfo td {
+            padding: 5px
+        }
 
         .vcont {
-            height: 500px; border-bottom: 3px solid black;
-            background: #ffffcc !important; padding: 5px; vertical-align: top;
+            height: 500px;
+            border-bottom: 3px solid black;
+            background: #ffffcc !important;
+            padding: 5px;
+            vertical-align: top;
         }
 
-        .cmtbg { background: yellow; padding: 5px; }
+        .cmtbg {
+            background: yellow;
+            padding: 5px;
+        }
 
-        .rpybg { background: lime; padding: 5px; }
+        .rpybg {
+            background: lime;
+            padding: 5px;
+        }
 
-        .reply-border { border-top: 2px solid silver;
-            border-bottom:2px solid silver }
+        .reply-border {
+            border-top: 2px solid silver;
+            border-bottom: 2px solid silver
+        }
 
-        .pushend { float: right }
+        .pushend {
+            float: right
+        }
 
-        .pre { white-space: pre-wrap } /*본문글 줄바꿈 표시*/
+        .pre {
+            white-space: pre-wrap
+        }
+
+        /*본문글 줄바꿈 표시*/
     </style>
 </head>
 
-    <th:block layout:fragment="content">
-        <main id="content">
-            <h2>게시판 본문글</h2>
-            <div class="row offset-1 col-10 my-3">
+<th:block layout:fragment="content">
+    <main id="content">
+        <h2>게시판 본문글</h2>
+        <div class="row offset-1 col-10 my-3">
             <table class="table">
-                <thead><tr><td>
-                    <button type="button" class="btn btn-light">
-                        이전게시물</button>
-                    &nbsp;
-                    <button type="button" class="btn btn-light">
-                        다음게시물</button></td>
+                <thead>
+                <tr>
+                    <td>
+                        <button class="btn btn-light" type="button">
+                            이전게시물
+                        </button>
+                        &nbsp;
+                        <button class="btn btn-light" type="button">
+                            다음게시물
+                        </button>
+                    </td>
                     <td class="text-end">
-                        <button type="button" class="btn btn-primary" id="newbdbtn"
-                                sec:authorize="isAuthenticated()">
-                            새글쓰기</button></td>
+                        <button class="btn btn-primary" id="newbdbtn" sec:authorize="isAuthenticated()"
+                                type="button">
+                            새글쓰기
+                        </button>
+                    </td>
                 </tr>
                 </thead>
-                <tbody id = "boardView">
+                <tbody id="boardView">
 
                 </tbody>
-                <tfoot><tr><td>
-                    <button type="button" class="btn btn-warning">
-                        수정하기</button>
-                    &nbsp;
-                    <button type="button" class="btn btn-danger" id="rmvbdbtn">
-                        삭제하기</button></td>
-                    <td class="text-end"><button type="button" class="btn btn-light" id="lstbdbtn">
-                        목록으로</button></td>
+                <tfoot>
+                <tr>
+                    <td>
+                        <button class="btn btn-warning" type="button">
+                            수정하기
+                        </button>
+                        &nbsp;
+                        <button class="btn btn-danger" id="rmvbdbtn" type="button">
+                            삭제하기
+                        </button>
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-light" id="lstbdbtn" type="button">
+                            목록으로
+                        </button>
+                    </td>
                 </tr>
                 </tfoot>
             </table>
 
-                <div class="my-3">
-                    <h3><i class="fa fa-commenting"></i> 나도 한마디</h3>
-                </div>
+            <div class="my-3">
+                <h3><i class="fa fa-commenting"></i> 나도 한마디</h3>
+            </div>
 
-                <table class="table reply-border">
-<!--                    <tr th:each="rp : ${bdrps.rps}">-->
-<!--                        <th:block th:if="${rp.rno eq rp.ref}">-->
-<!--                        <td class="text-left" th:text="${rp.userid}"></td>-->
-<!--                        <td>-->
-<!--                            <div class="cmtbg"><span th:text="${rp.regdate}">2025-03-04 23:41:27</span>-->
-<!--                                <span class="pushend" th:if="${session.loginUser ne null}">-->
-<!--                                        <a href="#" th:data-ref="${rp.rno}" data-bs-toggle="modal"-->
-<!--                                           data-bs-target="#cmtModal">[추가]</a> [수정] [삭제]</span></div>-->
-<!--                            <p class="py-1 pre" th:text="${rp.comments}"></p>-->
-<!--                        </td>-->
-<!--                        </th:block>-->
+            <table class="table reply-border" id="boardReply"
+                    th:data-loginuser = "${#authorization.expression('isAuthenticated()') ? #authentication.principal.username : ''}">
 
-<!--                        <th:block th:if="${rp.rno ne rp.ref}">-->
-<!--                        <td class="text-left">&nbsp;</td>-->
-<!--                        <td>-->
-<!--                            <div class="rpybg"><span th:text="${rp.userid}">작성자</span>-->
-<!--                                <span class="pushend" th:text="${rp.regdate}">작성일</span></div>-->
-<!--                            <p class="py-1 pre" th:text="${rp.comments}"></p>-->
-<!--                        </td>-->
-<!--                        </th:block>-->
-<!--                    </tr>-->
-                </table><!-- 댓글/대댓글 목록 -->
+            </table><!-- 댓글/대댓글 목록 -->
 
-                <div class="py-3" sec:authorize="isAuthenticated()">
-                    <form class="card card-body bg-light" method="post"
-                          name="replyfrm" id="replyfrm">
-                        <div class="row align-items-center">
-                            <div class="col text-center"><label th:text="${#authentication.principal.username}"></label></div>
-
-                            <div class="col-8"><textarea id="comments" rows="10" name="comments"
-                                 class="form-control col-7"></textarea></div>
-
-                            <div class="col"><button type="button" id="replybtn"
-                                 class="btn btn-dark">
-                                <i class="fa fa-commenting"></i> 댓글쓰기</button></div>
+            <div class="py-3" sec:authorize="isAuthenticated()">
+                <form class="card card-body bg-light" id="replyfrm"
+                      method="post" name="replyfrm">
+                    <div class="row align-items-center">
+                        <div class="col text-center"><label th:text="${#authentication.principal.username}"></label>
                         </div>
-                        <input type="hidden" name="userid" value="abc123" />
-                        <input type="hidden" name="pno" th:value="${param.bno}" />
+
+                        <div class="col-8"><textarea class="form-control col-7" id="comments" name="comments"
+                                                     rows="10"></textarea></div>
+
+                        <div class="col">
+                            <button class="btn btn-dark" id="replybtn"
+                                    type="button">
+                                <i class="fa fa-commenting"></i> 댓글쓰기
+                            </button>
+                        </div>
+                    </div>
+                    <input name="userid" type="hidden" value="abc123"/>
+                    <input name="pno" th:value="${param.bno}" type="hidden"/>
+                </form>
+            </div><!-- 댓글쓰기 -->
+
+        </div>
+    </main>
+
+    <div class="modal hide" id="cmtModal" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">대댓글 쓰기</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="cmmtfrm" method="post" name="cmmtfrm">
+                            <textarea class="span4" cols="60" id="cmmt" name="comments"
+                                      rows="8"></textarea>
+                        <input name="userid" type="hidden" value="abc123">
+                        <input name="pno" th:value="${param.bno}" type="hidden">
+                        <input id="refno" name="ref" type="hidden">
                     </form>
-                </div><!-- 댓글쓰기 -->
-
-            </div>
-        </main>
-
-        <div class="modal hide" id="cmtModal" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">대댓글 쓰기</h3>
-                    </div>
-                    <div class="modal-body">
-                        <form name="cmmtfrm" id="cmmtfrm" method="post">
-                            <textarea name="comments" id="cmmt" rows="8" cols="60"
-                                      class="span4"></textarea>
-                            <input type="hidden" name="userid" value="abc123">
-                            <input type="hidden" name="pno" th:value="${param.bno}">
-                            <input type="hidden" name="ref" id="refno">
-                        </form>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" id="cmmtbtn"
-                                class="btn btn-danger">대댓글 작성</button>
-                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button class="btn btn-danger" id="cmmtbtn"
+                            type="button">대댓글 작성
+                    </button>
                 </div>
             </div>
-        </div><!-- 대댓글 쓰기 -->
+        </div>
+    </div><!-- 대댓글 쓰기 -->
 
-    </th:block>
+</th:block>
 
-    <th:block layout:fragment="script">
-        <script src="/js/board.js"></script>
-        <script>
+<th:block layout:fragment="script">
+    <script src="/js/board.js"></script>
+    <script>
 
-            document.addEventListener("DOMContentLoaded", () => {
-                const bno = new URLSearchParams(window.location.search).get('bno');
-                    fetch(`/api/v1/board/view?bno=${bno}`,{
-                    headers : {'Accept' : 'application/json'}
-                }).then(response => response.json())
-                    .then(data => {
-                      //console.log(data)
-                        loadBoardView(data);
-                        loadBoardReply(data);
-                    })
-                    .catch(error =>{
-                       console.error('오류 발생',error)
-                    });
-            });
+        document.addEventListener("DOMContentLoaded", () => {
+            const bno = new URLSearchParams(window.location.search).get('bno');
+            fetch(`/api/v1/board/view?bno=${bno}`, {
+                headers: {'Accept': 'application/json'}
+            }).then(response => response.json())
+                .then(data => {
+                    //console.log(data)
+                    loadBoardView(data);
+                    loadBoardReply(data);
+                })
+                .catch(error => {
+                    console.error('오류 발생', error)
+                });
+        });
 
-            const loadBoardView = (data) => {
-                const boardview = document.querySelector('#boardView');
-                if(!data.bd || !data.bd.bno){
-                    boardview.innerHTML += '<tr><td>본문글이 없습니다.</td></tr>';
-                    return;
-                }
-                const views = `
+        const loadBoardView = (data) => {
+            const boardview = document.querySelector('#boardView');
+            if (!data.bd || !data.bd.bno) {
+                boardview.innerHTML += '<tr><td>본문글이 없습니다.</td></tr>';
+                return;
+            }
+            const views = `
                   <tr><th class="vtit" colspan="2">${data.bd.title}</th></tr>
 
                 <tr><td  class="vinfo">${data.bd.userid}</td>
@@ -172,66 +199,105 @@
 
                 <tr><td class="vcont pre" colspan="2">${data.bd.contents}</td></tr>
                 `;
-                boardview.innerHTML = views;
-            };
-            const loadBoardReply = (data) => {};
+            boardview.innerHTML = views;
+        };
+        const loadBoardReply = (data) => {
+            const boardreply = document.querySelector('#boardReply');
+            const loginUser =  document.querySelector('#boardReply').dataset.loginuser;
+            let replys = '';
+            if (!Array.isArray(data.rps) || data.rps.length === 0) {
+                return
+            }
 
-        </script>
-        <script th:inline="javascript">
-            let newbdbtn = document.querySelector("#newbdbtn");
-            let rmvbdbtn = document.querySelector("#rmvbdbtn");
-            let lstbdbtn = document.querySelector("#lstbdbtn");
-            let replybtn = document.querySelector("#replybtn");
-            let cmmtbtn = document.querySelector("#cmmtbtn");
-            let cmtModal = document.querySelector("#cmtModal");
+            data.rps.forEach(rp => {
+                if (rp.rno === rp.ref) {
+                    replys += `<tr>
+                        <td class="text-left">${rp.userid}</td>
+                        <td>
+                            <div class="cmtbg"><span >${rp.regdate}</span>`;
 
-            // 질의문자열에서 bno를 자바스크립트 코드에 삽입
-            const bno = [[${param.bno[0]}]];
+                    replys += loginUser ? `<span class="pushend">
+                            <a href="#" data-ref="${rp.rno}" data-bs-toggle="modal"
+                               data-bs-target="#cmtModal">[추가]</a> [수정] [삭제]</span></div>` : '';
 
-            newbdbtn?.addEventListener('click', (e) => {
-                location.href = `/board/write`;
-            });
-            rmvbdbtn.addEventListener('click', (e) => {
-                if (confirm('정말로 삭제하시겠습니까?')) {
-                    location.href = `/board/remove?bno=${bno}`;
+                    replys += `<p class="py-1 pre">${rp.comments}</p>
+                        </td>
+                    </tr>`;
                 }
-            });
-            lstbdbtn.addEventListener('click', (e) => {
-                location.href = `/board/list`;
-            });
 
-            replybtn?.addEventListener('click', (e) => {
-                const comments = document.querySelector('#comments');
-                const replyfrm = document.querySelector('#replyfrm');
-                if (comments.value === '') {
-                    alert('댓글을 작성하세요!!');
-                    return;
-                }
-                replyfrm.action = '/board/reply';
-                replyfrm.submit();
-            });
+                // <th:block th:if="${rp.rno ne rp.ref}">
+                //     <tr>
+                //         <td className="text-left">&nbsp;</td>
+                //         <td>
+                //             <div className="rpybg"><span th:text="${rp.userid}">작성자</span>
+                //                 <span className="pushend" th:text="${rp.regdate}">작성일</span></div>
+                //             <p className="py-1 pre" th:text="${rp.comments}"></p>
+                //         </td>
+                //     </tr>
+                // </th:block>
+             });
 
-            cmmtbtn.addEventListener('click', (e) => {
-                const cmmt = document.querySelector('#cmmt');
-                const cmmtfrm = document.querySelector('#cmmtfrm');
-                if (cmmt.value === '') {
-                    alert('대댓글을 작성하세요!!');
-                    return;
-                }
-                cmmtfrm.action = '/board/cmmt';
-                cmmtfrm.submit();
-            });
+            boardreply.innerHTML = replys;
 
-            // 대댓글창이 띄워지면, 댓글번호를 대댓글작성폼에 초기화함
-            // data-xx : 사용자 정의 요소
-            cmtModal.addEventListener('show.bs.modal', (e) => {
-                // 이벤트가 발생한 요소의 특정 속성값을 가져옴
-                const refVal = e.relatedTarget.getAttribute('data-ref');
-                let refno = document.querySelector('#refno');
-                refno.value = refVal;
-            });
 
-        </script>
-    </th:block>
+        };
+
+    </script>
+    <script th:inline="javascript">
+        let newbdbtn = document.querySelector("#newbdbtn");
+        let rmvbdbtn = document.querySelector("#rmvbdbtn");
+        let lstbdbtn = document.querySelector("#lstbdbtn");
+        let replybtn = document.querySelector("#replybtn");
+        let cmmtbtn = document.querySelector("#cmmtbtn");
+        let cmtModal = document.querySelector("#cmtModal");
+
+        // 질의문자열에서 bno를 자바스크립트 코드에 삽입
+        const bno = [[${param.bno[0]}]];
+
+        newbdbtn?.addEventListener('click', (e) => {
+            location.href = `/board/write`;
+        });
+        rmvbdbtn.addEventListener('click', (e) => {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                location.href = `/board/remove?bno=${bno}`;
+            }
+        });
+        lstbdbtn.addEventListener('click', (e) => {
+            location.href = `/board/list`;
+        });
+
+        replybtn?.addEventListener('click', (e) => {
+            const comments = document.querySelector('#comments');
+            const replyfrm = document.querySelector('#replyfrm');
+            if (comments.value === '') {
+                alert('댓글을 작성하세요!!');
+                return;
+            }
+            replyfrm.action = '/board/reply';
+            replyfrm.submit();
+        });
+
+        cmmtbtn.addEventListener('click', (e) => {
+            const cmmt = document.querySelector('#cmmt');
+            const cmmtfrm = document.querySelector('#cmmtfrm');
+            if (cmmt.value === '') {
+                alert('대댓글을 작성하세요!!');
+                return;
+            }
+            cmmtfrm.action = '/board/cmmt';
+            cmmtfrm.submit();
+        });
+
+        // 대댓글창이 띄워지면, 댓글번호를 대댓글작성폼에 초기화함
+        // data-xx : 사용자 정의 요소
+        cmtModal.addEventListener('show.bs.modal', (e) => {
+            // 이벤트가 발생한 요소의 특정 속성값을 가져옴
+            const refVal = e.relatedTarget.getAttribute('data-ref');
+            let refno = document.querySelector('#refno');
+            refno.value = refVal;
+        });
+
+    </script>
+</th:block>
 
 </html>
