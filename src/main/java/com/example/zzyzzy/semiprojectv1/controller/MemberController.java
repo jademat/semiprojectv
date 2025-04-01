@@ -109,7 +109,7 @@ public class MemberController {
     
     @GetMapping("/myinfo")
     public String myinfo(Authentication authentication, Model model) {
-        String returnUrl = "views/member/login";
+        String returnUrl = "redirect:/member/login";
 
         if(authentication != null && authentication.isAuthenticated()){
             // 인증 완료된 사용자 정보(아이디)를 가져옴
