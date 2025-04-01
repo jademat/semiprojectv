@@ -7,8 +7,10 @@ import com.example.zzyzzy.semiprojectv1.repository.MemberRepository;
 import com.example.zzyzzy.semiprojectv1.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -73,7 +75,7 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> loginok(MemberDTO member, HttpServletResponse res) {
         // 로그인 처리시 기타오류 발생에 대한 응답코드 설정
-        ResponseEntity<?> response = ResponseEntity.internalServerError().build();
+        ResponseEntity<?> response = ResponseEntity.internalServerError().body("서버처리시 오류 발생");
 
         log.info("submit된 로그인 정보 : {}", member);
 
@@ -91,12 +93,12 @@ public class MemberController {
             res.addCookie(cookie);
 
 
-            response = ResponseEntity.ok().build();
-        } catch (IllegalStateException e) {
-            // 비정상 처리시 상태코드 400으로 응답 - 클라이언트 잘못
-            // 아이디나 비밀번호 잘못 입력시
-            response = ResponseEntity.badRequest().body(e.getMessage());
-            e.printStackTrace();
+            response = ResponseEntity.ok().body("로그인 성공");
+        } catch (BadCredentialsException e) {
+            // 비정상 처리시 상태코드 401으로 응답 - 아이디나 비밀번호 잘못 입력시
+            response = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디나 비밀번호를 확인해주세요");
+
+            log.info(e.getMessage());
         } catch (Exception e) {
             // 비정상 처리시 상태코드 500으로 응답 - 서버 잘못
             e.printStackTrace();
