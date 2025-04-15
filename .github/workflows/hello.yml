@@ -3,7 +3,7 @@ name: Hello, World github action workflow
 # main 브랜치에 push 이벤트가 발생하면
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   hello:
