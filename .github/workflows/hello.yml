@@ -1,0 +1,20 @@
+name: Hello, World github action workflow
+
+# main 브랜치에 push 이벤트가 발생하면
+on:
+  push:
+    branches: [main]
+
+jobs:
+  hello:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Hello World
+        run: echo "Hello, GitHub Action"
+
+      - name : Current Date
+        run: date
+
+      - name : show current directory contents
+        run: ls -al
