@@ -37,6 +37,7 @@ jobs:
           ls -al deploy
           
       # SSH로 EC2에 파일 전송(/home/ubuntu/deploy)
+      # AWS EC2보안그룹 상에 SSH 22포트 접속을 개방
       - name: Copy files to EC2
         uses: appleboy/scp-action@master
         with:
