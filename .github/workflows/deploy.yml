@@ -47,6 +47,7 @@ jobs:
             target: "/home/${{ secrets.EC2_USERNAME }}"
             strip_components: 1
 
+
       # SSH로 EC2에 접속해서 배포 스크립트 실행
       - name: Execute deployment script
         uses: appleboy/ssh-action@master
